@@ -79,14 +79,16 @@ def get_fuel_prices_in_comuna(comuna, comuna_id, bencina):
 
     return data
 
+# GET -> params: comuna, bencina
 def lambda_handler(event: dict["comuna": str, "bencina": str], context):
     """
     Handler that is executed by lambda function
     """
-    comuna = parse_comuna(event["comuna"])
+    event_input = event["queryStringParameters"]
+    comuna = parse_comuna(event_input.get("comuna", ""))
     comuna_id = get_comuna_id(comuna)
 
-    bencina = parse_bencina(event["bencina"])
+    bencina = parse_bencina(event_input.get("bencina", ""))
     fuel_prices = get_fuel_prices_in_comuna(comuna, comuna_id, bencina)
 
     top_three = get_top_three_fuel_prices(fuel_prices)
@@ -97,6 +99,11 @@ def lambda_handler(event: dict["comuna": str, "bencina": str], context):
     }
 
 if __name__ == "__main__":
-    event = { "comuna": "San Joaquín", "bencina": "95" }
+    event = {
+        "queryStringParameters": {
+            "comuna": "San Joaquín",
+            "bencina": "95"
+        }
+    }
     context = {}
     print(lambda_handler(event, context))
