@@ -1,9 +1,17 @@
+# standard
 import json
 import os
 import requests
 import secret
+
+# comunas
 from comunas import region_por_comuna
+
+# utils
+from utils import get_top_three_fuel_prices
 from utils import normalize
+from utils import parse_bencina
+from utils import parse_comuna
 
 
 CNE_URL = secret.CNE_URL
@@ -11,23 +19,6 @@ TOKEN = secret.CNE_TOKEN
 if os.environ.get("CNE_URL"):
     CNE_URL = os.environ.get("CNE_URL")
     TOKEN = os.environ.get("CNE_TOKEN")
-
-def parse_comuna(event_input):
-    """
-    Function for parsing the input of comuna
-    inside event
-    """
-    return normalize(event_input.lower())
-
-def parse_bencina(event_input):
-    """
-    Function for parsing the input of bencina
-    inside event
-    """
-    possible_types = ["93", "95", "97", "diesel", "petroleo"]
-    if str(event_input) in possible_types:
-        return str(event_input)
-    return None
 
 def get_comuna_id(comuna):
     """
@@ -88,15 +79,6 @@ def get_fuel_prices_in_comuna(comuna, comuna_id, bencina):
 
     return data
 
-def get_top_three_fuel_prices(fuel_prices: list[dict[
-        "distribuidor": str, "direccion": str, "bencina": str, "precio": str
-]]):
-    """
-    Sort the fuel prices to get the top three
-    """
-    sorted_prices = sorted(fuel_prices, key=lambda d: d["precio"])
-    return sorted_prices[:3]
-
 def lambda_handler(event: dict["comuna": str, "bencina": str], context):
     """
     Handler that is executed by lambda function
@@ -106,15 +88,12 @@ def lambda_handler(event: dict["comuna": str, "bencina": str], context):
 
     bencina = parse_bencina(event["bencina"])
     fuel_prices = get_fuel_prices_in_comuna(comuna, comuna_id, bencina)
-    print(fuel_prices)
-    print()
 
     top_three = get_top_three_fuel_prices(fuel_prices)
-    print(top_three)
 
     return {
         'statusCode': 200,
-        'body': json.dumps({"message": 'Hello from Lambda!', "token": TOKEN})
+        'body': json.dumps(top_three)
     }
 
 if __name__ == "__main__":
