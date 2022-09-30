@@ -70,12 +70,14 @@ def get_fuel_prices_in_comuna(comuna, comuna_id, bencina):
         "petroleo": "petroleo diesel",
     }
 
+    parsed_bencina = bencina_parser.get(bencina, None)
+
     data = [
         {
             "distribuidor": price_data["distribuidor"]["nombre"],
             "direccion": f"{price_data['direccion_calle']} {price_data['direccion_numero']}",
-            "bencina": bencina_parser[bencina],
-            "precio": price_data["precios"][bencina_parser[bencina]],
+            "bencina": parsed_bencina,
+            "precio": price_data["precios"].get(parsed_bencina, 9999),
         }
         for price_data in response.json()["data"]
     ]
