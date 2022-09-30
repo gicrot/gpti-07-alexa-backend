@@ -80,7 +80,7 @@ def get_fuel_prices_in_comuna(comuna, comuna_id, bencina):
     return data
 
 # GET -> params: comuna, bencina
-def lambda_handler(event: dict["comuna": str, "bencina": str], context):
+def lambda_handler(event, context):
     """
     Handler that is executed by lambda function
     """
