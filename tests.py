@@ -10,6 +10,7 @@ from utils import parse_comuna
 
 # lambda function
 from lambda_function import lambda_handler
+from lambda_function import get_comuna_id
 
 class TestsUtils(TestCase):
     def setUp(self):
@@ -40,6 +41,14 @@ class TestsUtils(TestCase):
         parsed_input = parse_bencina(event_input)
         self.assertEqual(parsed_input, "Error")
 
+    def test_comuna_id(self):
+        comuna = get_comuna_id("las condes")
+        self.assertNotEqual(comuna, "Error")
+
+    def test_bad_comuna_id(self):
+        comuna = get_comuna_id("las xondes")
+        self.assertEqual(comuna, "Error")
+
 
 class TestAPIStatus(TestCase):
     def setUp(self):
@@ -68,6 +77,10 @@ class TestAPIStatus(TestCase):
         self.event_data["comuna"] = "San joaquín"
         self.event_data["bencina"] = "99"
         self.event_input["queryStringParameters"] = self.event_data
+        response = lambda_handler(self.event_input, {})
+        self.assertEqual(response["statusCode"], 400)
+
+    def test_bad_event_params(self):
         response = lambda_handler(self.event_input, {})
         self.assertEqual(response["statusCode"], 400)
 

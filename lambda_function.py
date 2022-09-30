@@ -89,7 +89,12 @@ def lambda_handler(event, context):
     """
     Handler that is executed by lambda function
     """
-    event_input = event["queryStringParameters"]
+    event_input = event.get("queryStringParameters", None)
+    if not event_input:
+        return {
+            "statusCode": 400,
+            "body": json.dumps({"error": f"Not found query params"})
+        }
     comuna = parse_comuna(event_input.get("comuna", ""))
     comuna_id = get_comuna_id(comuna)
 
