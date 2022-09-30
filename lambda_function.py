@@ -98,7 +98,7 @@ def lambda_handler(event, context):
         }
     raw_bencina = event_input.get("bencina", "")
     bencina = parse_bencina(raw_bencina)
-    if bencina == "error":
+    if bencina == "Error":
         return {
             "statusCode": 400,
             "body": json.dumps({"error": f"Tipo de bencina <{raw_bencina}> no encontrada"})
