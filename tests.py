@@ -38,7 +38,7 @@ class TestsUtils(TestCase):
     def test_bad_parse_fuel(self):
         event_input = "99"
         parsed_input = parse_bencina(event_input)
-        self.assertIsNone(parsed_input)
+        self.assertEqual(parsed_input, "Error")
 
 
 class TestAPIStatus(TestCase):
