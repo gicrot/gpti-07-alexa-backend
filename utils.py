@@ -23,7 +23,7 @@ def parse_bencina(event_input):
     inside event
     """
     # Nota: Se agregó manejo de error si llega otro tipo
-    error_message = "error"
+    error_message = "Error"
     possible_types = ["93", "95", "97", "diesel", "petroleo"]
     if str(event_input) in possible_types:
         return str(event_input)
