@@ -27,11 +27,17 @@ def parse_bencina(event_input):
         return str(event_input)
     return None
 
-def get_top_three_fuel_prices(fuel_prices: list[dict[
-        "distribuidor": str, "direccion": str, "bencina": str, "precio": str
-]]):
+def get_top_three_fuel_prices(fuel_prices): 
     """
     Sort the fuel prices to get the top three
+    args: [
+        {
+            "distribuidor": str,
+            "direccion": str,
+            "bencina": str,
+            "precio": str
+        }
+    ]
     """
     sorted_prices = sorted(fuel_prices, key=lambda d: d["precio"])
     return sorted_prices[:3]
