@@ -2,22 +2,29 @@
 
 ## Requisitos
 
-Para poder ejecutar de manera correcta la API es necesario tener instalado *python*, al menos la versión 3.6.0
+Para poder ejecutar de manera correcta la API es necesario tener instalado *python*, al menos la versión 3.6.0. Además, es necesario tener instaladas las siguientes librerías:
+- *json*
+- *os*
+- *requests*
+
+Las primeras dos son librerías estándar de python, por lo que no es necesario instalarlas. En el caso de *requests*, es necesario instalarla mediante el comando `pip install requests`.
 
 ## Uso
 
-La API recibe inputs en forma de *events*, los cuales deben ser enviados en formato *json*. con contenido de forma similar a la siguiente:
+La API recibe inputs en forma de *queryStringParameters*, generado a partir del *query* que se le entregará a Alexa, los cuales deben ser enviados en formato *json*. con contenido de forma similar a la siguiente:
 
 ```event
 {
-    "comuna": <comuna pedida>,
-    "bencina": <bencina pedida> 
+ "queryStringParameters": {
+            "comuna": <comuna pedida>,
+            "bencina": <bencina pedida>
+        }
 }
 ```
 
 Donde *comuna* es un string que representa la comuna de la cual se quiere obtener el precio de la bencina, y *bencina* es un string que representa el tipo de bencina que se quiere obtener el precio.
 
-Para *comuna* se espera que el string sea el nombre de una comuna real existente en Chile. Por ejemplo, para la comuna de *San Joaquín*.
+Para *comuna* se espera que el string sea el nombre de una comuna real existente en Chile. Por ejemplo, la comuna de *San Joaquín*.
 
 Para *bencina* se espera que el string sea uno de los siguientes: *93*, *95*, *97*, *diesel* o *petroleo*. 
 
