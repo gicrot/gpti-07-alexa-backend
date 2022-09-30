@@ -25,25 +25,28 @@ def get_comuna_id(comuna):
     Function that gets the id in CNE api
     to be used in the request
     """
-    response = requests.get(
-        f"{CNE_URL}/comunas",
-        params={
-            "token": TOKEN,
-            "region": region_por_comuna[comuna],
-        }
-    )
-    
-    data = [
-        {
-            "cod_comuna": comuna["cod_comuna"],
-            "nom_comuna": normalize(comuna["nom_comuna"].lower())
-        }
-        for comuna in response.json()["data"]
-    ]
+    try:
+        response = requests.get(
+            f"{CNE_URL}/comunas",
+            params={
+                "token": TOKEN,
+                "region": region_por_comuna[comuna],
+            }
+        )
+        
+        data = [
+            {
+                "cod_comuna": comuna["cod_comuna"],
+                "nom_comuna": normalize(comuna["nom_comuna"].lower())
+            }
+            for comuna in response.json()["data"]
+        ]
 
-    data_comuna = next(item for item in data if item["nom_comuna"] == comuna)
+        data_comuna = next(item for item in data if item["nom_comuna"] == comuna)
 
-    return data_comuna["cod_comuna"]
+        return data_comuna["cod_comuna"]
+    except KeyError:
+        return "Error"
 
 def get_fuel_prices_in_comuna(comuna, comuna_id, bencina):
     """
@@ -88,7 +91,18 @@ def lambda_handler(event, context):
     comuna = parse_comuna(event_input.get("comuna", ""))
     comuna_id = get_comuna_id(comuna)
 
-    bencina = parse_bencina(event_input.get("bencina", ""))
+    if comuna_id == "Error":
+        return {
+            "statusCode": 400,
+            "body": json.dumps({"error": f"Comuna <{comuna}> no encontrada"})
+        }
+    raw_bencina = event_input.get("bencina", "")
+    bencina = parse_bencina(raw_bencina)
+    if bencina == "Error":
+        return {
+            "statusCode": 400,
+            "body": json.dumps({"error": f"Tipo de bencina <{raw_bencina}> no encontrada"})
+        }
     fuel_prices = get_fuel_prices_in_comuna(comuna, comuna_id, bencina)
 
     top_three = get_top_three_fuel_prices(fuel_prices)
@@ -105,5 +119,19 @@ if __name__ == "__main__":
             "bencina": "95"
         }
     }
+    wrong_comune = {
+        "queryStringParameters": {
+            "comuna": "Comuna mala",
+            "bencina": "95"
+        }
+    }
+    wrong_fuel = {
+        "queryStringParameters": {
+            "comuna": "San Joaquín",
+            "bencina": "1000"
+        }
+    }
     context = {}
-    print(lambda_handler(event, context))
+    print(f"CASO CORRECTO: {lambda_handler(event, context)}\n")
+    print(f"CASO COMUNA ERRONEA: {lambda_handler(wrong_comune, context)}\n")
+    print(f"CASO BENCINA ERRONEA: {lambda_handler(wrong_fuel, context)}\n")
