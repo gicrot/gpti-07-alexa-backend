@@ -122,3 +122,11 @@ class TestAPIBody(TestCase):
             for dat in data
         ]
         self.assertTrue(prices[0] <= prices[1] <= prices[2])
+
+    def test_api_with_400(self):
+        self.event_data["comuna"] = ""
+        self.event_data["bencina"] = "99"
+        self.event_input["queryStringParameters"] = self.event_data
+        response = lambda_handler(self.event_input, {})
+        data = json.loads(response["body"])
+        self.assertNotIsInstance(data, list)
