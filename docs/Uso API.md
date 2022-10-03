@@ -55,6 +55,19 @@ En caso que ambos sean correctos, el output entregará los 3 mejores locales (m�
     ]
 }
 ```
+
+### Caso error sin parámetros
+
+En caso que no se envíen los parámetros al hacer la llamada, o que estén incompletos, se entregará el siguietne mensaje de error:
+  ```output
+  {
+      "statusCode": 400,
+      "body": {
+          "error": "Not found query params"
+      }
+  }
+  ```
+
 ### Caso error por comuna
 En caso que la comuna entregada no exista, o se haya entregado el nómbre de una fórma no válida, se entregará el siguiente mensaje de error como respuesta:
   
