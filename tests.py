@@ -1,8 +1,13 @@
 # standard
 import json
+import secret
+import os
 
 # test
 from unittest import TestCase
+
+# api
+from api import get_comuna_id
 
 # utils
 from utils import parse_bencina
@@ -10,10 +15,11 @@ from utils import parse_comuna
 
 # lambda function
 from lambda_function import lambda_handler
-from lambda_function import get_comuna_id
 
 class TestsUtils(TestCase):
     def setUp(self):
+        self.cne_url = os.environ.get("CNE_URL", secret.CNE_URL)
+        self.token = os.environ.get("CNE_TOKEN", secret.CNE_TOKEN)   
         return super().setUp()
 
     def test_parse_comuna_with_accent(self):
@@ -42,11 +48,11 @@ class TestsUtils(TestCase):
         self.assertEqual(parsed_input, "Error")
 
     def test_comuna_id(self):
-        comuna = get_comuna_id("las condes")
+        comuna = get_comuna_id("las condes", self.cne_url, self.token)
         self.assertNotEqual(comuna, "Error")
 
     def test_bad_comuna_id(self):
-        comuna = get_comuna_id("las xondes")
+        comuna = get_comuna_id("las xondes", self.cne_url, self.token)
         self.assertEqual(comuna, "Error")
 
 
@@ -65,6 +71,24 @@ class TestAPIStatus(TestCase):
         self.event_input["queryStringParameters"] = self.event_data
         response = lambda_handler(self.event_input, {})
         self.assertEqual(response["statusCode"], 200)
+
+    def test_200_status_with_two_communes(self):
+        self.event_data["comuna"] = "San joaquín"
+        self.event_data["comuna2"] = "Macul"
+        self.event_data["bencina"] = "95"
+        self.event_input["queryStringParameters"] = self.event_data
+        response = lambda_handler(self.event_input, {})
+        self.assertEqual(response["statusCode"], 200)
+
+    def test_no_input(self):
+        response = lambda_handler({}, {})
+        self.assertEqual(response["statusCode"], 400)
+
+    def test_no_commune(self):
+        self.event_data["bencina"] = "97"
+        self.event_input["queryStringParameters"] = self.event_data
+        response = lambda_handler(self.event_input, {})
+        self.assertEqual(response["statusCode"], 400)
 
     def test_bad_commune(self):
         self.event_data["comuna"] = "San xoaquín"
