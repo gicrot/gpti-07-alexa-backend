@@ -17,14 +17,16 @@ La API recibe inputs en forma de *queryStringParameters*, generado a partir del 
 {
  "queryStringParameters": {
             "comuna": <comuna pedida>,
+            "comuna2": <comuna pedida>,
+            "comuna3": <comuna pedida>,
             "bencina": <bencina pedida>
         }
 }
 ```
 
-Donde *comuna* es un string que representa la comuna de la cual se quiere obtener el precio de la bencina, y *bencina* es un string que representa el tipo de bencina que se quiere obtener el precio.
+Donde *comuna*, *comuna2* y *comuna3* son un string que representa la comuna de la cual se quiere obtener el precio de la bencina, siendo los dos últimos opcionales, y *bencina* es un string que representa el tipo de bencina que se quiere obtener el precio.
 
-Para *comuna* se espera que el string sea el nombre de una comuna real existente en Chile. Por ejemplo, la comuna de *San Joaquín*.
+Para los tipo *comuna* se espera que el string sea el nombre de una comuna real existente en Chile. Por ejemplo, la comuna de *San Joaquín*.
 
 Para *bencina* se espera que el string sea uno de los siguientes: *93*, *95*, *97*, *diesel* o *petroleo*. 
 
@@ -58,12 +60,24 @@ En caso que ambos sean correctos, el output entregará los 3 mejores locales (m�
 
 ### Caso error sin parámetros
 
-En caso que no se envíen los parámetros al hacer la llamada, o que estén incompletos, se entregará el siguietne mensaje de error:
+En caso que no se envíen los parámetros al hacer la llamada, o que estén incompletos, se entregará el siguiente mensaje de error:
   ```output
   {
       "statusCode": 400,
       "body": {
           "error": "Not found query params"
+      }
+  }
+  ```
+
+### Caso error sin comunas
+
+En caso que no se envíen las comunas al hacer la llamada, se entregará el siguiente mensaje de error:
+  ```output
+  {
+      "statusCode": 400,
+      "body": {
+          "error": "Indica al menos una comuna"
       }
   }
   ```
