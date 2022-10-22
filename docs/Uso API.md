@@ -19,12 +19,14 @@ La API recibe inputs en forma de *queryStringParameters*, generado a partir del 
             "comuna": <comuna pedida>,
             "comuna2": <comuna pedida>,
             "comuna3": <comuna pedida>,
+            ...
+            "comunaX": <comuna pedida>,
             "bencina": <bencina pedida>
         }
 }
 ```
 
-Donde *comuna*, *comuna2* y *comuna3* son un string que representa la comuna de la cual se quiere obtener el precio de la bencina, siendo los dos últimos opcionales, y *bencina* es un string que representa el tipo de bencina que se quiere obtener el precio.
+Donde *comuna*, *comuna2*, *comuna3*, ..., *comunaX*, son un string que representa la comuna de la cual se quiere obtener el precio de la bencina, siendo los dos últimos opcionales, y *bencina* es un string que representa el tipo de bencina que se quiere obtener el precio.
 
 Para los tipo *comuna* se espera que el string sea el nombre de una comuna real existente en Chile. Por ejemplo, la comuna de *San Joaquín*.
 
